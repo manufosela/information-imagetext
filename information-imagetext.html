@@ -1,0 +1,169 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="dragndrop_behaviour.html">
+
+<dom-module id="information-imagetext">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      
+      :host .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      :host .imgcont {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: 3px solid #F00;
+        overflow: hidden;
+      }
+      
+      :host img {
+        border-radius: 50%;
+      }
+
+      :host .text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      :host h2,
+      :host h3,
+      :host h4  {
+        margin: .2em;
+      }
+
+      :host .btngroup {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        overflow: hidden;
+      }
+
+    </style>
+
+    <div class="container">
+      <div class="btngroup" style$="width:{{size}}px;">
+        <button id="zoomBtn" on-click="_zoom" hidden="{{!hasZoom}}">
+          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+          width="10px" height="10px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+            <g>
+              <path d="M501.255,414.849L379.817,313.63c-17.188,26.438-39.75,49-66.156,66.188l101.188,121.438
+                c11.25,13.5,30.656,14.406,43.094,1.969l45.281-45.281C515.661,445.505,514.755,426.099,501.255,414.849z"/>
+              <path d="M384.005,192.004c0-106.031-85.969-192-192-192c-106.031,0-192,85.969-192,192c0,106.032,85.969,192,192,192
+                C298.036,384.005,384.005,298.036,384.005,192.004z M192.004,336.005c-79.406,0-144-64.594-144-144c0-79.406,64.594-144,144-144
+                c79.407,0,144,64.594,144,144C336.005,271.411,271.411,336.005,192.004,336.005z"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+      <div class="imgcont" style$="width:{{size}}px; height:{{size}}px">
+        <img src="{{picture}}" width="{{size}}" />
+      </div>
+      <div class="text" style$="font-size:{{fontsize}}px">
+        <h2>{{title}}</h2>
+        <h3>{{subtitle}}</h3>
+        <template is="dom-repeat" items="{{texts}}">
+          <h4>{{item}}</h4>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    class InformationImagetext extends DragAndDropBehaviour(Polymer.Element) {
+      static get is() { return 'information-imagetext'; }
+
+      static get properties() {
+        return {
+          picture: {
+            type: String,
+            value: '',
+          },
+          _size: {
+            type: Number,
+            value: 200
+          },
+          size: {
+            type: Number,
+            value: this._size
+          },
+          zoomsize: {
+            type: Number,
+            value: 0,
+            observer:'computeZoom'
+          },
+          title: {
+            type: String,
+            value: 'FAKE TITLE'
+          },
+          subtitle: {
+            type: String,
+            value: 'Fake Subtitle'
+          },
+          texts:{
+            type: Object,
+            value: ['uno','dos']
+          },
+          hasZoom: {
+            type: Boolean,
+            value: false
+          },
+          fontsize: {
+            type: Number,
+            computed: '_calcFontSize(size)'
+          }
+        };
+      }
+      
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        this._size = this.size;
+        if (this.querySelector('title')) {
+          this.title = this.querySelector('title').innerHTML;
+        }
+        if (this.querySelector('subtitle')) {
+          this.subtitle = this.querySelector('subtitle').innerHTML;
+        }
+        if (this.querySelector('picture')) {
+          this.picture = this.querySelector('picture').getAttribute('src');
+        }
+        if (this.querySelector('text')) {
+          this.texts = Array.prototype.map.call(this.querySelectorAll('text'), function(n){ return n.innerHTML; });
+        }
+        this.computeZoom();
+      }
+
+      disconeectedCallback() {
+        super.disconectedCallback();
+      }
+
+      computeZoom() {
+        this.hasZoom = (this.zoomsize > 0 && this.zoomsize !== this.size);
+
+      }
+
+      _zoom() {
+        this.size = (this.size==this.zoomsize)?this._size:this.zoomsize;
+      }
+      _calcFontSize(size) {
+        return size/10;
+      }
+     
+    }
+
+    window.customElements.define(InformationImagetext.is, InformationImagetext);
+  </script>
+</dom-module>
