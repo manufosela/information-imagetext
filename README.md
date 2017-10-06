@@ -1,4 +1,4 @@
-# cvitaede-circlepicture [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/manufosela/cvitaede-circlepicture)
+# information-imagetext [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/manufosela/information-imagetext)
 
 ##DEMO
 [Codepen Demo](http://codepen.io/manufosela/pen/RoRBrV)
@@ -7,21 +7,27 @@ Polymer web component configurable to show an image in a circle with title and s
 
 ## Demo
 
-[cvitaede-circlepicture Demo](http://codepen.io/manufosela/pen/RoRBrV)
+[information-imagetext Demo](http://codepen.io/manufosela/pen/RoRBrV)
 
 <!---
 ```
 <custom-element-demo>
   <template>
     <script src="../webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="cvitaede-circlepicture.html">
+    <link rel="import" href="information-imagetext.html">
     <next-code-block></next-code-block>
   </template>
 </custom-element-demo>
 ```
 -->
 ```html
-<cvitaede-circlepicture size="250" picture="https://github.com/manufosela/cvitaede-circlepicture/blob/master/demo/img/fake2.png?raw=true" title="Hello everybody!" subtitle="I'm a picture"></cvitaede-circlepicture>
+  <information-imagetext size="100" zoomsize="250">
+    <picture src="https://github.com/manufosela/information-imagetext/blob/master/demo/img/fake2.png?raw=true">Fake picture</picture>
+    <title>Hello everybody!</title>
+    <subtitle>I'm a picture</subtitle>
+    <text>Other text to write that you want...</text>
+    <text>Other more text to write that you want...</text>
+  </information-imagetext>
 ```
 
 ## Author
