@@ -1,5 +1,4 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="dragndrop_behaviour.html">
 
 <dom-module id="information-imagetext">
   <template>
@@ -79,7 +78,7 @@
   </template>
 
   <script>
-    class InformationImagetext extends DragAndDropBehaviour(Polymer.Element) {
+    class InformationImagetext extends Polymer.Element {
       static get is() { return 'information-imagetext'; }
 
       static get properties() {
