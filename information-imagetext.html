@@ -47,6 +47,7 @@
         overflow: hidden;
       }
 
+      :host canvas { /* */}
     </style>
 
     <div class="container">
@@ -67,13 +68,7 @@
       <div class="imgcont" style$="width:{{size}}px; height:{{size}}px">
         <img src="{{picture}}" width="{{size}}" />
       </div>
-      <div class="text" style$="font-size:{{fontsize}}px">
-        <h2>{{title}}</h2>
-        <h3>{{subtitle}}</h3>
-        <template is="dom-repeat" items="{{texts}}">
-          <h4>{{item}}</h4>
-        </template>
-      </div>
+      <canvas id="texto"></canvas>
     </div>
   </template>
 
@@ -94,6 +89,10 @@
           size: {
             type: Number,
             value: this._size
+          },
+          factorTextWidth:{
+            type: Number,
+            value: 2
           },
           zoomsize: {
             type: Number,
@@ -130,8 +129,8 @@
       connectedCallback() {
         super.connectedCallback();
         this._size = this.size;
-        if (this.querySelector('title')) {
-          this.title = this.querySelector('title').innerHTML;
+        if (this.querySelector('maintitle')) {
+          this.title = this.querySelector('maintitle').innerHTML;
         }
         if (this.querySelector('subtitle')) {
           this.subtitle = this.querySelector('subtitle').innerHTML;
@@ -142,6 +141,7 @@
         if (this.querySelector('text')) {
           this.texts = Array.prototype.map.call(this.querySelectorAll('text'), function(n){ return n.innerHTML; });
         }
+        this.printText();
         this.computeZoom();
       }
 
@@ -151,12 +151,40 @@
 
       computeZoom() {
         this.hasZoom = (this.zoomsize > 0 && this.zoomsize !== this.size);
+      }
 
+      printText(){
+        var canvas = this.root.querySelector('#texto');
+        canvas.width = this.size * this.factorTextWidth;
+        canvas.height = this.size;
+        var ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = "#003300";
+        ctx.font = this._getFont(canvas);
+        ctx.textAlign = 'center';
+        var x = canvas.width / 2;
+        var y = this.fontsize + 3;
+        console.log(this._getFont(canvas));
+        ctx.fillText(this.title, x, y);
+        ctx.fillText(this.subtitle, x, y * 2);
+        for(var i=0; i<this.texts.length;i++){
+          ctx.fillText(this.texts[i], x, (3+i)*y);
+        }        this.factorAreaWidth
+      }
+
+      _getFont(canvas) {
+        var fontBase = 120;                   // selected default width for canvas
+        var fontSize = 8;
+        var ratio = fontSize / fontBase;   // calc ratio
+        this.fontsize = canvas.width * ratio;   // get font size based on current width
+        return (this.fontsize|0) + 'px sans-serif'; // set font
       }
 
       _zoom() {
         this.size = (this.size==this.zoomsize)?this._size:this.zoomsize;
+        this.printText();
       }
+
       _calcFontSize(size) {
         return size/10;
       }
