@@ -5,6 +5,9 @@
     <style>
       :host {
         display: block;
+        --border-color-1: #F00;
+        --border-color-2: #0F0;
+        --border-color-3: #00F;
       }
       
       :host .container {
@@ -14,25 +17,38 @@
         justify-content: center;
       }
       
-      :host .imgcont {
+      :host .imgcont, :host .imgcont2, :host .imgcont3 {
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        border: 3px solid #F00;
         overflow: hidden;
       }
-      
+      :host .imgcont {
+        border: 3px solid var(--border-color-1);
+      }
+      :host .imgcont2 {
+        border: 3px solid var(--border-color-2);
+      }
+      :host .imgcont3 {
+        border: 3px solid var(--border-color-3);
+      }
+
       :host img {
         border-radius: 50%;
+        width: 100%;
+        line-height: 100%;
+        text-align: center;
       }
 
       :host .text {
-        display: flex;
+        display: none;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-      }
+        background: #AAA;
+        border-radius:10px;
+     }
       
       :host h2,
       :host h3,
@@ -50,25 +66,15 @@
       :host canvas { /* */}
     </style>
 
-    <div class="container">
-      <div class="btngroup" style$="width:{{size}}px;">
-        <button id="zoomBtn" on-click="_zoom" hidden="{{!hasZoom}}">
-          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-          width="10px" height="10px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
-            <g>
-              <path d="M501.255,414.849L379.817,313.63c-17.188,26.438-39.75,49-66.156,66.188l101.188,121.438
-                c11.25,13.5,30.656,14.406,43.094,1.969l45.281-45.281C515.661,445.505,514.755,426.099,501.255,414.849z"/>
-              <path d="M384.005,192.004c0-106.031-85.969-192-192-192c-106.031,0-192,85.969-192,192c0,106.032,85.969,192,192,192
-                C298.036,384.005,384.005,298.036,384.005,192.004z M192.004,336.005c-79.406,0-144-64.594-144-144c0-79.406,64.594-144,144-144
-                c79.407,0,144,64.594,144,144C336.005,271.411,271.411,336.005,192.004,336.005z"/>
-            </g>
-          </svg>
-        </button>
+    <div class="container" on-click="_zoom">
+      <div class="imgcont">
+        <div class="imgcont2">
+          <div class="imgcont3" style$="width:{{size}}px; height:{{size}}px">
+            <img src="{{picture}}" width="{{size}}" alt="{{altpicture}}"/>
+          </div>
+        </div>
       </div>
-      <div class="imgcont" style$="width:{{size}}px; height:{{size}}px">
-        <img src="{{picture}}" width="{{size}}" />
-      </div>
-      <canvas id="texto"></canvas>
+      <div id="texto" class="text"></div>
     </div>
   </template>
 
@@ -81,6 +87,10 @@
           picture: {
             type: String,
             value: '',
+          },
+          altpicture:{
+            type: String,
+            value: ''
           },
           _size: {
             type: Number,
@@ -137,6 +147,7 @@
         }
         if (this.querySelector('picture')) {
           this.picture = this.querySelector('picture').getAttribute('src');
+          this.altpicture = this.querySelector('picture').innerHTML;
         }
         if (this.querySelector('text')) {
           this.texts = Array.prototype.map.call(this.querySelectorAll('text'), function(n){ return n.innerHTML; });
@@ -154,35 +165,19 @@
       }
 
       printText(){
-        var canvas = this.root.querySelector('#texto');
-        canvas.width = this.size * this.factorTextWidth;
-        canvas.height = this.size;
-        var ctx = canvas.getContext('2d');
-
-        ctx.fillStyle = "#003300";
-        ctx.font = this._getFont(canvas);
-        ctx.textAlign = 'center';
-        var x = canvas.width / 2;
-        var y = this.fontsize + 3;
-        console.log(this._getFont(canvas));
-        ctx.fillText(this.title, x, y);
-        ctx.fillText(this.subtitle, x, y * 2);
-        for(var i=0; i<this.texts.length;i++){
-          ctx.fillText(this.texts[i], x, (3+i)*y);
-        }        this.factorAreaWidth
-      }
-
-      _getFont(canvas) {
-        var fontBase = 120;                   // selected default width for canvas
-        var fontSize = 8;
-        var ratio = fontSize / fontBase;   // calc ratio
-        this.fontsize = canvas.width * ratio;   // get font size based on current width
-        return (this.fontsize|0) + 'px sans-serif'; // set font
+        var txtCont = this.root.querySelector('#texto');
+        var texto = '<h1>' + this.title + '</h1>';
+        texto += '<h2>' + this.subtitle + '</h2>';
+        for(var i=0; i<this.texts.length;i++) {
+          texto += '<h3>' + this.texts[i] + '</h3>';
+        }
+        txtCont.innerHTML = texto;
       }
 
       _zoom() {
-        this.size = (this.size==this.zoomsize)?this._size:this.zoomsize;
+        this.size = (this.size===this._size*this.zoomsize)?this._size:this._size*this.zoomsize;
         this.printText();
+        this.root.querySelector('#texto').style.display = (this.size===this._size*this.zoomsize)?'flex':'none';
       }
 
       _calcFontSize(size) {
