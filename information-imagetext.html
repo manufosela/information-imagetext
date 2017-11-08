@@ -74,7 +74,13 @@
           </div>
         </div>
       </div>
-      <div id="texto" class="text"></div>
+      <div id="texto" class="text">
+          <h1>{{title}}</h1>
+          <h2>{{subtitle}}</h2>
+          <template is="dom-repeat" items="{{texts}}">
+            <h3>{{item}}</h3>
+          </template>
+      </div>
     </div>
   </template>
 
@@ -152,7 +158,6 @@
         if (this.querySelector('text')) {
           this.texts = Array.prototype.map.call(this.querySelectorAll('text'), function(n){ return n.innerHTML; });
         }
-        this.printText();
         this.computeZoom();
       }
 
@@ -164,19 +169,8 @@
         this.hasZoom = (this.zoomsize > 0 && this.zoomsize !== this.size);
       }
 
-      printText(){
-        var txtCont = this.root.querySelector('#texto');
-        var texto = '<h1>' + this.title + '</h1>';
-        texto += '<h2>' + this.subtitle + '</h2>';
-        for(var i=0; i<this.texts.length;i++) {
-          texto += '<h3>' + this.texts[i] + '</h3>';
-        }
-        txtCont.innerHTML = texto;
-      }
-
       _zoom() {
         this.size = (this.size===this._size*this.zoomsize)?this._size:this._size*this.zoomsize;
-        this.printText();
         this.root.querySelector('#texto').style.display = (this.size===this._size*this.zoomsize)?'flex':'none';
       }
 
