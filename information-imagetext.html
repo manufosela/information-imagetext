@@ -75,7 +75,7 @@
         </div>
       </div>
       <div id="texto" class="text">
-          <h1>{{title}}</h1>
+          <h1>{{maintitle}}</h1>
           <h2>{{subtitle}}</h2>
           <template is="dom-repeat" items="{{texts}}">
             <h3>{{item}}</h3>
@@ -115,7 +115,7 @@
             value: 0,
             observer:'computeZoom'
           },
-          title: {
+          maintitle: {
             type: String,
             value: 'FAKE TITLE'
           },
@@ -146,7 +146,7 @@
         super.connectedCallback();
         this._size = this.size;
         if (this.querySelector('maintitle')) {
-          this.title = this.querySelector('maintitle').innerHTML;
+          this.maintitle = this.querySelector('maintitle').innerHTML;
         }
         if (this.querySelector('subtitle')) {
           this.subtitle = this.querySelector('subtitle').innerHTML;
